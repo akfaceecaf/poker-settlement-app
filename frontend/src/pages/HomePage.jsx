@@ -83,7 +83,7 @@ function HomePage() {
     }
 
     const sessionResponse = await fetch(
-      "${process.env.VITE_API_URL}/sessions",
+      `${import.meta.env.VITE_API_URL}/sessions`,
       {
         method: "POST",
         headers: {
