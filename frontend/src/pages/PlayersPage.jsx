@@ -7,7 +7,7 @@ function PlayersPage() {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const response = await fetch("http://localhost:3000/players/");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/players/`);
       const data = await response.json();
       setPlayers(data);
     };
@@ -17,7 +17,7 @@ function PlayersPage() {
   const handlePlayerClick = (player) => {
     const fetchPlayerDetails = async () => {
       const response = await fetch(
-        `http://localhost:3000/players/${player.player_id}`
+        `${import.meta.env.VITE_API_URL}/players/${player.player_id}`,
       );
       const data = await response.json();
       setSelectedPlayer(data);

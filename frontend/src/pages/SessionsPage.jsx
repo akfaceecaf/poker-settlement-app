@@ -7,7 +7,7 @@ function SessionsPage() {
 
   useEffect(() => {
     const fetchSessions = async () => {
-      const response = await fetch("http://localhost:3000/sessions/");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/sessions/`);
       const data = await response.json();
       setSessions(data);
     };
@@ -17,7 +17,7 @@ function SessionsPage() {
   const handleSelectedSession = (session) => {
     const fetchSessionDetails = async () => {
       const response = await fetch(
-        `http://localhost:3000/sessions/${session.session_id}/players`
+        `${import.meta.env.VITE_API_URL}/sessions/${session.session_id}/players`,
       );
       const data = await response.json();
       setSelectedSession(data);

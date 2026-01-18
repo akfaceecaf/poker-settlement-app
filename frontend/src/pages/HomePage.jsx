@@ -28,11 +28,11 @@ function HomePage() {
     if (field === "cashOut" || field === "buyIn") {
       const totalBuyIn = players.reduce(
         (acc, p) => acc + parseFloat(p.buyIn || 0),
-        0
+        0,
       );
       const totalCashOut = players.reduce(
         (acc, p) => acc + parseFloat(p.cashOut || 0),
-        0
+        0,
       );
       setPotImbalance(totalBuyIn - totalCashOut);
     }
@@ -62,7 +62,7 @@ function HomePage() {
     return existingPlayers.filter(
       (p) =>
         p.name.toLowerCase().startsWith(playerName.toLowerCase()) &&
-        !players.some((added) => added.playerId === p.player_id)
+        !players.some((added) => added.playerId === p.player_id),
     );
   };
 
@@ -82,30 +82,36 @@ function HomePage() {
       return;
     }
 
-    const sessionResponse = await fetch("http://localhost:3000/sessions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const sessionResponse = await fetch(
+      "${process.env.VITE_API_URL}/sessions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: date,
+        }),
       },
-      body: JSON.stringify({
-        date: date,
-      }),
-    });
+    );
     const sessionData = await sessionResponse.json();
 
     const updatedPlayers = [...players];
     for (let i = 0; i < updatedPlayers.length; i++) {
       const player = updatedPlayers[i];
       if (!player.playerId) {
-        const playerResponse = await fetch("http://localhost:3000/players/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const playerResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/players/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: player.name,
+            }),
           },
-          body: JSON.stringify({
-            name: player.name,
-          }),
-        });
+        );
         const playerData = await playerResponse.json();
         updatedPlayers[i].playerId = playerData.player_id;
       }
@@ -115,7 +121,7 @@ function HomePage() {
     for (let i = 0; i < updatedPlayers.length; i++) {
       const player = updatedPlayers[i];
       const sessionPlayerResponse = await fetch(
-        "http://localhost:3000/session_players",
+        `${import.meta.env.VITE_API_URL}/session_players`,
         {
           method: "POST",
           headers: {
@@ -127,7 +133,7 @@ function HomePage() {
             buy_in_amount: player.buyIn,
             cash_out_amount: player.cashOut,
           }),
-        }
+        },
       );
 
       if (!sessionPlayerResponse.ok) {
@@ -140,7 +146,7 @@ function HomePage() {
 
     console.log("Saved");
     setSaveState(true);
-    const response = await fetch("http://localhost:3000/players");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/players`);
     const data = await response.json();
     setExistingPlayers(data);
   };
@@ -162,7 +168,7 @@ function HomePage() {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const response = await fetch("http://localhost:3000/players");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/players`);
       const data = await response.json();
       setExistingPlayers(data);
     };
