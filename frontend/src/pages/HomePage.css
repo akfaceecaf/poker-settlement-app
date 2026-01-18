@@ -1,0 +1,132 @@
+.form-card {
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.form-card h2 {
+  font-size: 2rem;
+}
+
+.date-input {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.player-table {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 40px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.table-header,
+.table-cell {
+  padding: 0.25rem;
+}
+
+.table-header {
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid black;
+}
+
+.table-cell input {
+  width: 100%;
+  height: 20px;
+  padding: 0 2px;
+  font-family: inherit;
+  font-size: 12px;
+  border: 1px solid black;
+  border-radius: 1px;
+  background-color: transparent;
+}
+
+.table-cell button {
+  width: 100%;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 1.5px;
+  color: black;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.table-cell button:hover {
+  background-color: #ada6a3;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  width: 100%;
+  max-height: 100px;
+  padding: 3px;
+  overflow-y: auto;
+  z-index: 1;
+  background-color: white;
+  border: 1px solid black;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.autocomplete-dropdown .dropdown-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.button-group {
+  /* order: 2; */
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+}
+
+.button-group button {
+  height: 36px;
+  padding: 5px;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 12px;
+  color: black;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: 1px;
+  cursor: pointer;
+}
+
+.button-group button:hover {
+  background-color: #ada6a3;
+}
+
+.checkbox-group {
+  order: 1;
+  max-width: 200px;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.checkbox-group label {
+  font-size: 12px;
+}
