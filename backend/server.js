@@ -2,10 +2,16 @@ import express from "express";
 import cors from "cors";
 import pool from "./db.js";
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true,
+  }),
+);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
@@ -31,7 +37,7 @@ app.get("/sessions/:sessionId", async (req, res) => {
     const { sessionId } = req.params;
     const result = await pool.query(
       "SELECT * FROM sessions WHERE session_id = $1",
-      [sessionId]
+      [sessionId],
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Session not found." });
@@ -48,7 +54,7 @@ app.get("/sessions/:sessionId/players", async (req, res) => {
     const { sessionId } = req.params;
     const sessionCheck = await pool.query(
       "SELECT * FROM sessions WHERE session_id = $1",
-      [sessionId]
+      [sessionId],
     );
     if (sessionCheck.rows.length === 0) {
       return res.status(404).json({ error: "Session not found." });
@@ -64,7 +70,7 @@ app.get("/sessions/:sessionId/players", async (req, res) => {
       JOIN players p ON p.player_id = sp.player_id
       WHERE session_id = $1
       ORDER BY sp.profit DESC`,
-      [sessionId]
+      [sessionId],
     );
     res.json(result.rows);
   } catch (error) {
@@ -89,7 +95,7 @@ app.get("/players/:playerId", async (req, res) => {
 
     const playerResult = await pool.query(
       "SELECT * FROM players WHERE player_id = $1",
-      [playerId]
+      [playerId],
     );
     if (playerResult.rows.length === 0) {
       return res.status(404).json({ error: "Player not found." });
@@ -97,7 +103,7 @@ app.get("/players/:playerId", async (req, res) => {
 
     const sessionResult = await pool.query(
       "SELECT * FROM session_players WHERE player_id = $1",
-      [playerId]
+      [playerId],
     );
 
     const player = playerResult.rows[0];
@@ -128,7 +134,7 @@ app.post("/sessions", async (req, res) => {
     const { date } = req.body;
     const result = await pool.query(
       "INSERT INTO sessions (date) VALUES ($1) RETURNING *",
-      [date]
+      [date],
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -142,7 +148,7 @@ app.post("/players", async (req, res) => {
     const { name } = req.body;
     const result = await pool.query(
       "INSERT INTO players (name) VALUES ($1) RETURNING *",
-      [name]
+      [name],
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -156,7 +162,7 @@ app.post("/session_players", async (req, res) => {
     const { session_id, player_id, buy_in_amount, cash_out_amount } = req.body;
     const result = await pool.query(
       "INSERT INTO session_players (session_id, player_id, buy_in_amount, cash_out_amount) VALUES ($1, $2, $3, $4) RETURNING *",
-      [session_id, player_id, buy_in_amount, cash_out_amount]
+      [session_id, player_id, buy_in_amount, cash_out_amount],
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -166,5 +172,5 @@ app.post("/session_players", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
