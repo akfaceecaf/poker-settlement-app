@@ -131,3 +131,18 @@
 .checkbox-group label {
   font-size: 12px;
 }
+
+.settlements-card {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.settlements-card h3 {
+  font-size: 1rem;
+}
+
+.settlements-card p {
+  font-size: 12px;
+  text-wrap: wrap;
+  word-wrap: break-word;
+}
