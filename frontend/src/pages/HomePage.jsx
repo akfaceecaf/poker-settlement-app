@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { calcSettlements } from "../utils/calcAmounts";
 import "./HomePage.css";
 
 function HomePage() {
@@ -12,6 +13,7 @@ function HomePage() {
   const [forceBalancedPot, setForceBalancedPot] = useState(true);
   const [potImbalance, setPotImbalance] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [settlements, setSettlements] = useState([]);
 
   const handlePlayerChange = (index, field, value) => {
     const newPlayers = [...players];
@@ -164,6 +166,7 @@ function HomePage() {
     setDate("");
     setHiddenDropdowns(new Set());
     setSaveState(false);
+    setSettlements([]);
   };
 
   useEffect(() => {
@@ -211,6 +214,24 @@ function HomePage() {
     return true;
   };
 
+  const handleCalcSettlements = () => {
+    if (!validateSession()) {
+      return;
+    }
+
+    console.log(players);
+    const calculatedSettlements = calcSettlements(
+      players.map((p) => ({
+        playerId: p.playerId || p.id,
+        name: p.name,
+        cashInAmount: parseFloat(p.buyIn),
+        cashOutAmount: parseFloat(p.cashOut),
+      })),
+    );
+    console.log(settlements);
+    setSettlements(calculatedSettlements);
+  };
+
   return (
     <div className="container">
       <div className="form-card">
@@ -248,6 +269,9 @@ function HomePage() {
         <div className="form-actions">
           <div className="button-group">
             <button onClick={addPlayerRow}>Add new player</button>
+            <button onClick={handleCalcSettlements}>
+              Calculate settlements
+            </button>
             {!saveState ? (
               <button onClick={handleSaveSession}>Save session</button>
             ) : (
@@ -265,6 +289,20 @@ function HomePage() {
         </div>
         {saveState && (
           <p style={{ color: "green", fontSize: "12px" }}>Session saved</p>
+        )}
+        {settlements && settlements.length > 0 && (
+          <div className="settlements-card">
+            <h3>Settlements</h3>
+            <div className="settlements-list">
+              {settlements.map((s, idx) => (
+                <div key={idx} className="settlement-item">
+                  <p>
+                    {s.payerName} → {s.receiverName} ${s.payment.toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>

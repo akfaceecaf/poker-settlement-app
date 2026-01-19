@@ -96,6 +96,7 @@
 .button-group {
   /* order: 2; */
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   font-size: 1rem;
 }
