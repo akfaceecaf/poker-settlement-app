@@ -28,11 +28,11 @@ function HomePage() {
     newPlayers[index][field] = value;
 
     if (field === "cashOut" || field === "buyIn") {
-      const totalBuyIn = players.reduce(
+      const totalBuyIn = newPlayers.reduce(
         (acc, p) => acc + parseFloat(p.buyIn || 0),
         0,
       );
-      const totalCashOut = players.reduce(
+      const totalCashOut = newPlayers.reduce(
         (acc, p) => acc + parseFloat(p.cashOut || 0),
         0,
       );
@@ -44,6 +44,15 @@ function HomePage() {
 
   const removePlayer = (index) => {
     const newPlayers = players.filter((_, i) => i !== index);
+    const totalBuyIn = newPlayers.reduce(
+      (acc, p) => acc + parseFloat(p.buyIn || 0),
+      0,
+    );
+    const totalCashOut = newPlayers.reduce(
+      (acc, p) => acc + parseFloat(p.cashOut || 0),
+      0,
+    );
+    setPotImbalance(totalBuyIn - totalCashOut);
     setPlayers(newPlayers);
   };
 
@@ -167,6 +176,7 @@ function HomePage() {
     setHiddenDropdowns(new Set());
     setSaveState(false);
     setSettlements([]);
+    setPotImbalance(null); 
   };
 
   useEffect(() => {
@@ -262,9 +272,15 @@ function HomePage() {
               filteredPlayers={getFilteredPlayers(player.name)}
             />
           ))}
+          <div className="table-cell">Total</div>
+          <div className="table-cell">{players.reduce((arr, p) => arr + parseFloat(p.buyIn || 0),0).toFixed(2)}</div>
+          <div className="table-cell">{players.reduce((arr, p) => arr + parseFloat(p.cashOut || 0),0).toFixed(2)}</div>
+          <div className="table-cell"></div>
         </div>
-        {errorMessage && (
-          <p style={{ color: "red", fontSize: "12px" }}>{errorMessage}</p>
+        {potImbalance !== null && potImbalance !== 0 && (
+          <div style={{color: "red", fontSize: "14px"}}> 
+            Pot Imbalance: {potImbalance.toFixed(2)}
+          </div>
         )}
         <div className="form-actions">
           <div className="button-group">
@@ -303,6 +319,9 @@ function HomePage() {
               ))}
             </div>
           </div>
+        )}
+        {errorMessage && (
+          <p style={{ color: "red", fontSize: "12px" }}>{errorMessage}</p>
         )}
       </div>
     </div>
