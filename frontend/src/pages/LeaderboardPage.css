@@ -1,0 +1,44 @@
+.rankings-table {
+  display: grid;
+  grid-template-columns: 1.5fr 0.5fr 1fr 1fr 1fr;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.table-header,
+.table-cell {
+  padding: 0.25rem;
+}
+
+.table-header {
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid black;
+}
+
+.date-filter {
+  display: flex;
+  margin: 1rem;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-filter button {
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  border-radius: 1.5px;
+  color: black;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.date-filter button:hover {
+  background-color: #ada6a3;
+}
+
+.date-filter button.active {
+  background-color: #ada6a3;
+}

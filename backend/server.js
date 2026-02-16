@@ -89,6 +89,39 @@ app.get("/players", async (req, res) => {
   }
 });
 
+app.get("/players/stats/", async (req, res) => {
+  try {
+    const { days } = req.query;
+    const parsedDays = parseInt(days);
+    const dateQuery = !isNaN(parsedDays)
+      ? `AND s.date >= NOW() - INTERVAL '${parsedDays} days'`
+      : "";
+
+    const result = await pool.query(
+      `SELECT
+        name,
+        p.player_id,
+        COUNT(sp.session_id) AS total_sessions,
+        SUM(profit) AS total_profit,
+        SUM(profit) / NULLIF(COUNT(sp.session_id),0) as profit_per_session
+      FROM players p
+      LEFT JOIN session_players sp ON sp.player_id = p.player_id
+      LEFT JOIN sessions s ON s.session_id = sp.session_id
+      WHERE 1=1
+      ${dateQuery}
+      GROUP BY 
+        name,
+        p.player_id
+      HAVING COUNT(sp.session_id) > 0
+      ORDER BY total_profit DESC NULLS LAST`,
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching player stats:", error);
+    res.status(500).json({ error: "Failed to fetch players" });
+  }
+});
+
 app.get("/players/:playerId", async (req, res) => {
   try {
     const { playerId } = req.params;
