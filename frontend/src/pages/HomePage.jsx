@@ -36,7 +36,7 @@ function HomePage() {
         (acc, p) => acc + parseFloat(p.cashOut || 0),
         0,
       );
-      setPotImbalance(totalBuyIn - totalCashOut);
+      setPotImbalance((Math.round(totalBuyIn - totalCashOut) * 100) / 100);
     }
 
     setPlayers(newPlayers);
@@ -176,7 +176,7 @@ function HomePage() {
     setHiddenDropdowns(new Set());
     setSaveState(false);
     setSettlements([]);
-    setPotImbalance(null); 
+    setPotImbalance(null);
   };
 
   useEffect(() => {
@@ -200,7 +200,15 @@ function HomePage() {
       return false;
     }
 
-    if (forceBalancedPot && potImbalance !== 0) {
+    const totalBuyIn = players.reduce(
+      (acc, p) => acc + parseFloat(p.buyIn || 0),
+      0,
+    );
+    const totalCashOut = players.reduce(
+      (acc, p) => acc + parseFloat(p.cashOut || 0),
+      0,
+    );
+    if (forceBalancedPot && totalBuyIn !== totalCashOut) {
       setErrorMessage("Pot is imbalanced.");
       return false;
     }
@@ -273,12 +281,20 @@ function HomePage() {
             />
           ))}
           <div className="table-cell">Total</div>
-          <div className="table-cell">{players.reduce((arr, p) => arr + parseFloat(p.buyIn || 0),0).toFixed(2)}</div>
-          <div className="table-cell">{players.reduce((arr, p) => arr + parseFloat(p.cashOut || 0),0).toFixed(2)}</div>
+          <div className="table-cell">
+            {players
+              .reduce((arr, p) => arr + parseFloat(p.buyIn || 0), 0)
+              .toFixed(2)}
+          </div>
+          <div className="table-cell">
+            {players
+              .reduce((arr, p) => arr + parseFloat(p.cashOut || 0), 0)
+              .toFixed(2)}
+          </div>
           <div className="table-cell"></div>
         </div>
         {potImbalance !== null && potImbalance !== 0 && (
-          <div style={{color: "red", fontSize: "14px"}}> 
+          <div style={{ color: "red", fontSize: "14px" }}>
             Pot Imbalance: {potImbalance.toFixed(2)}
           </div>
         )}
