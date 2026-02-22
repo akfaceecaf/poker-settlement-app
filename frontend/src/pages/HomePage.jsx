@@ -232,12 +232,13 @@ function HomePage() {
       return;
     }
 
+    // convert to cents for ease of calculation
     const calculatedSettlements = calcSettlements(
       players.map((p) => ({
         playerId: p.playerId || p.id,
         name: p.name,
-        cashInAmount: parseFloat(p.buyIn),
-        cashOutAmount: parseFloat(p.cashOut),
+        cashInAmount: toCents(p.buyIn),
+        cashOutAmount: toCents(p.cashOut),
       })),
     );
     setSettlements(calculatedSettlements);
@@ -322,7 +323,8 @@ function HomePage() {
               {settlements.map((s, idx) => (
                 <div key={idx} className="settlement-item">
                   <p>
-                    {s.payerName} → {s.receiverName} ${s.payment.toFixed(2)}
+                    {s.payerName} → {s.receiverName} $
+                    {(s.payment / 100).toFixed(2)}
                   </p>
                 </div>
               ))}
