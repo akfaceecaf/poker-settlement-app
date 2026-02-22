@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { calcSettlements } from "../utils/calcAmounts";
 import "./HomePage.css";
 
+const toCents = (val) => Math.round(parseFloat(val || 0) * 100);
+
 function HomePage() {
   const [players, setPlayers] = useState([
     { id: crypto.randomUUID(), playerId: "", name: "", buyIn: "", cashOut: "" },
@@ -29,14 +31,14 @@ function HomePage() {
 
     if (field === "cashOut" || field === "buyIn") {
       const totalBuyIn = newPlayers.reduce(
-        (acc, p) => acc + parseFloat(p.buyIn || 0),
+        (acc, p) => acc + toCents(p.buyIn),
         0,
       );
       const totalCashOut = newPlayers.reduce(
-        (acc, p) => acc + parseFloat(p.cashOut || 0),
+        (acc, p) => acc + toCents(p.cashOut),
         0,
       );
-      setPotImbalance((Math.round(totalBuyIn - totalCashOut) * 100) / 100);
+      setPotImbalance((totalBuyIn - totalCashOut) / 100);
     }
 
     setPlayers(newPlayers);
@@ -44,15 +46,12 @@ function HomePage() {
 
   const removePlayer = (index) => {
     const newPlayers = players.filter((_, i) => i !== index);
-    const totalBuyIn = newPlayers.reduce(
-      (acc, p) => acc + parseFloat(p.buyIn || 0),
-      0,
-    );
+    const totalBuyIn = newPlayers.reduce((acc, p) => acc + toCents(p.buyIn), 0);
     const totalCashOut = newPlayers.reduce(
-      (acc, p) => acc + parseFloat(p.cashOut || 0),
+      (acc, p) => acc + toCents(p.cashOut),
       0,
     );
-    setPotImbalance(totalBuyIn - totalCashOut);
+    setPotImbalance((totalBuyIn - totalCashOut) / 100);
     setPlayers(newPlayers);
   };
 
@@ -200,12 +199,9 @@ function HomePage() {
       return false;
     }
 
-    const totalBuyIn = players.reduce(
-      (acc, p) => acc + parseFloat(p.buyIn || 0),
-      0,
-    );
+    const totalBuyIn = players.reduce((acc, p) => acc + toCents(p.buyIn), 0);
     const totalCashOut = players.reduce(
-      (acc, p) => acc + parseFloat(p.cashOut || 0),
+      (acc, p) => acc + toCents(p.cashOut),
       0,
     );
     if (forceBalancedPot && totalBuyIn !== totalCashOut) {
@@ -225,7 +221,6 @@ function HomePage() {
       }
       if (!player.cashOut || parseFloat(player.cashOut) < 0) {
         setErrorMessage("Enter a valid cash-out amount.");
-        alert("Enter a valid cash-out amount.");
         return false;
       }
     }
@@ -237,7 +232,6 @@ function HomePage() {
       return;
     }
 
-    console.log(players);
     const calculatedSettlements = calcSettlements(
       players.map((p) => ({
         playerId: p.playerId || p.id,
@@ -246,7 +240,6 @@ function HomePage() {
         cashOutAmount: parseFloat(p.cashOut),
       })),
     );
-    console.log(settlements);
     setSettlements(calculatedSettlements);
   };
 
@@ -282,14 +275,14 @@ function HomePage() {
           ))}
           <div className="table-cell">Total</div>
           <div className="table-cell">
-            {players
-              .reduce((arr, p) => arr + parseFloat(p.buyIn || 0), 0)
-              .toFixed(2)}
+            {(
+              players.reduce((arr, p) => arr + toCents(p.buyIn), 0) / 100
+            ).toFixed(2)}
           </div>
           <div className="table-cell">
-            {players
-              .reduce((arr, p) => arr + parseFloat(p.cashOut || 0), 0)
-              .toFixed(2)}
+            {(
+              players.reduce((arr, p) => arr + toCents(p.cashOut), 0) / 100
+            ).toFixed(2)}
           </div>
           <div className="table-cell"></div>
         </div>
